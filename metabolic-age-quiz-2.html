@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Discover Your Metabolic Age</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F2F6;
+    --bg-soft: #FFFFFF;
+    --primary: #7B1E8A;
+    --primary-light: #9B2FB5;
+    --cta: #7B1E8A;
+    --cta-light: #9B2FB5;
+    --cta-hover: #6A1976;
+    --track: #ECE8EF;
+    --inactive: #BCB4C2;
+    --ink: #2B2230;
+    --ink-soft: #6B6072;
+    --gold: #C9A24B;
+    --gold-soft: #E4D2A0;
+    --card-border: rgba(123, 30, 138, 0.08);
+    --shadow-sm: 0 1px 2px rgba(43, 21, 51, 0.04), 0 1px 1px rgba(43, 21, 51, 0.03);
+    --shadow-md: 0 4px 16px rgba(123, 30, 138, 0.08), 0 1px 3px rgba(43, 21, 51, 0.04);
+    --shadow-lg: 0 12px 32px rgba(123, 30, 138, 0.14), 0 4px 8px rgba(43, 21, 51, 0.06);
+    --shadow-cta: 0 8px 24px rgba(123, 30, 138, 0.28), 0 2px 6px rgba(123, 30, 138, 0.2);
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    color: var(--ink);
+  }
+
+  #app-root {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(155, 47, 181, 0.07), transparent 45%),
+      radial-gradient(circle at 100% 30%, rgba(123, 30, 138, 0.05), transparent 50%),
+      var(--bg);
+  }
+
+  .quiz-container {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+
+  /* ---------- Top bar (back + progress) ---------- */
+  .top-bar {
+    padding-top: 20px;
+  }
+
+  .back-btn {
+    background: var(--bg-soft);
+    border: none;
+    color: var(--ink-soft);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+
+  .back-btn:active { transform: scale(0.92); }
+
+  .progress-track {
+    width: 100%;
+    height: 6px;
+    background: var(--track);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    box-shadow: inset 0 1px 2px rgba(43, 21, 51, 0.05);
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cta), var(--cta-light));
+    border-radius: 999px;
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ---------- Screen wrapper / animation ---------- */
+  .screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 28px;
+    padding: 32px 0;
+    animation: fadeSlideUp 300ms ease-out both;
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ---------- Typography ---------- */
+  .quiz-title {
+    font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .quiz-title .accent {
+    background: linear-gradient(90deg, var(--cta), var(--cta-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .quiz-subtitle {
+    font-size: 15.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .small-note {
+    font-size: 11.5px;
+    color: var(--inactive);
+    text-align: center;
+    line-height: 1.5;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+
+  .eyebrow {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 6px 0;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn-primary {
+    position: relative;
+    width: 90%;
+    margin: 0 auto;
+    height: 64px;
+    background: linear-gradient(135deg, var(--cta) 0%, var(--cta-light) 100%);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: transform 150ms ease, box-shadow 150ms ease;
+    box-shadow: var(--shadow-cta);
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+    transform: skewX(-20deg);
+    animation: shimmer 2.8s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { left: -60%; }
+    45% { left: 130%; }
+    100% { left: 130%; }
+  }
+
+  .btn-primary:hover { box-shadow: 0 10px 28px rgba(123, 30, 138, 0.34), 0 2px 6px rgba(123, 30, 138, 0.22); }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+  .btn-primary:disabled::after { display: none; }
+
+  @media (max-width: 380px) {
+    .btn-primary { font-size: 16px; }
+  }
+
+  /* ---------- Option list ---------- */
+  .option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .option-btn {
+    width: 100%;
+    text-align: left;
+    padding: 17px 20px;
+    border-radius: 16px;
+    border: 1.5px solid var(--card-border);
+    background: var(--bg-soft);
+    font-size: 16px;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--ink);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease, transform 100ms ease, box-shadow 200ms ease;
+    animation: fadeSlideUp 300ms ease-out both;
+
+  }
+
+  .option-btn:active { transform: scale(0.98); }
+
+  .option-btn:hover {
+    border-color: rgba(123, 30, 138, 0.18);
+    box-shadow: var(--shadow-md);
+  }
+
+  .option-btn.selected {
+    border-color: var(--cta);
+    background: linear-gradient(135deg, rgba(123, 30, 138, 0.07), rgba(155, 47, 181, 0.04));
+    color: var(--cta);
+    box-shadow: var(--shadow-md);
+    font-weight: 600;
+  }
+
+  .option-btn:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  .option-btn:disabled:hover {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .transition-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13.5px;
+    color: var(--cta);
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.6;
+    margin: 4px 0 0 0;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(123, 30, 138, 0.06), rgba(201, 162, 75, 0.06));
+    border-radius: 14px;
+    border: 1px solid var(--card-border);
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  .transition-text.show {
+    animation: fadeSlideUp 350ms ease-out forwards;
+  }
+
+  /* ---------- Body type grid (illustrated silhouettes) ---------- */
+  .bodytype-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .bodytype-card {
+    background: var(--bg-soft);
+    border-radius: 18px;
+    border: 1.5px solid var(--card-border);
+    box-shadow: var(--shadow-sm);
+    padding: 18px 10px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: border-color 200ms ease, box-shadow 200ms ease, transform 100ms ease;
+    animation: fadeSlideUp 300ms ease-out both;
+  }
+
+  .bodytype-card:active { transform: scale(0.97); }
+
+  .bodytype-card.selected {
+    border-color: var(--cta);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, rgba(123, 30, 138, 0.06), rgba(155, 47, 181, 0.03));
+  }
+
+  .bodytype-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 115px;
+  }
+
+  .bodytype-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-align: center;
+    margin: 0;
+  }
+
+  .bodytype-card.selected .bodytype-label { color: var(--cta); }
+
+
+  .unit-toggle {
+    position: relative;
+    width: 250px;
+    height: 52px;
+    background: var(--track);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    margin: 0 auto;
+    box-shadow: inset 0 1px 3px rgba(43, 21, 51, 0.06);
+  }
+
+  .unit-toggle-bg {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    width: calc(50% - 4px);
+    background: linear-gradient(135deg, var(--cta), var(--cta-light));
+    border-radius: 999px;
+    box-shadow: 0 3px 10px rgba(123, 30, 138, 0.3);
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .unit-toggle-bg.right { transform: translateX(calc(100% + 0px)); }
+
+  .unit-toggle button {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    background: none;
+    border: none;
+    z-index: 1;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--inactive);
+    cursor: pointer;
+    transition: color 300ms ease;
+  }
+
+  .unit-toggle button.active { color: #fff; }
+
+  /* ---------- Value display ---------- */
+  .value-display {
+    text-align: center;
+    position: relative;
+  }
+
+  .value-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 76px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--cta) 20%, var(--cta-light) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 2px 14px rgba(123, 30, 138, 0.18));
+  }
+
+  .value-unit {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--cta-light);
+    margin-left: 4px;
+  }
+
+  /* ---------- Ruler slider ---------- */
+  .ruler-wrap {
+    width: 100%;
+    user-select: none;
+  }
+
+  .ruler-viewport {
+    position: relative;
+    height: 84px;
+    overflow: hidden;
+    touch-action: none;
+    cursor: grab;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(123,30,138,0.035), rgba(123,30,138,0.01));
+  }
+
+  .ruler-viewport::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(90deg, var(--bg) 0%, transparent 12%, transparent 88%, var(--bg) 100%);
+  }
+
+  .ruler-viewport.dragging { cursor: grabbing; }
+
+  .ruler-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: flex-start;
+    height: 100%;
+    will-change: transform;
+    padding-top: 14px;
+  }
+
+  .tick {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 18px;
+    flex-shrink: 0;
+  }
+
+  .tick-mark {
+    background: #D7CEDC;
+    width: 1px;
+    height: 14px;
+    border-radius: 1px;
+  }
+
+  .tick-mark.major {
+    width: 2px;
+    height: 26px;
+    background: var(--inactive);
+  }
+
+  .tick-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-top: 5px;
+    white-space: nowrap;
+  }
+
+  .ruler-indicator {
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .ruler-indicator-line {
+    width: 3px;
+    height: 46px;
+    background: linear-gradient(180deg, var(--cta), var(--cta-light));
+    border-radius: 999px;
+    box-shadow: 0 0 10px rgba(123, 30, 138, 0.4);
+  }
+
+  .ruler-indicator-triangle {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--cta-light);
+    margin-top: -2px;
+  }
+
+  .drag-hint {
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin: 10px 0 0 0;
+    font-weight: 500;
+  }
+
+  .unit-hint {
+    text-align: center;
+    font-size: 11.5px;
+    color: var(--inactive);
+    margin: 4px 0 0 0;
+  }
+
+  /* ---------- Social proof cards ---------- */
+  .proof-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+
+  .stars { color: var(--gold); font-weight: 700; letter-spacing: 1px; }
+
+  .testimonial-card {
+    background: var(--bg-soft);
+    border-radius: 18px;
+    padding: 18px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-md);
+    animation: fadeSlideUp 300ms ease-out both;
+  }
+
+  .testimonial-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--bg-soft);
+    box-shadow: 0 0 0 1.5px var(--cta), var(--shadow-sm);
+    background: var(--track);
+  }
+
+  .testimonial-header .author { margin: 0 0 2px 0 !important; }
+
+  .testimonial-card .stars-row {
+    color: var(--gold);
+    font-size: 12.5px;
+    letter-spacing: 1px;
+    margin: 0;
+  }
+
+  .testimonial-card p {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .testimonial-card .author {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .story-card {
+    background: var(--bg-soft);
+    border-radius: 18px;
+    padding: 18px;
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--cta);
+    box-shadow: var(--shadow-md);
+    animation: fadeSlideUp 300ms ease-out both;
+  }
+
+  .story-card .testimonial-header { margin-bottom: 12px; }
+
+  .story-card p.story-text {
+    font-size: 14px;
+    color: var(--ink);
+    font-style: italic;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .story-card .author { font-size: 13px; color: var(--ink); font-weight: 600; margin: 0; }
+
+  .cards-stack { display: flex; flex-direction: column; gap: 12px; }
+
+  /* ---------- Processing screen ---------- */
+  .processing-screen {
+    align-items: center;
+    text-align: center;
+  }
+
+  .processing-icon {
+    font-size: 54px;
+    animation: spin 1.6s linear infinite;
+    filter: drop-shadow(0 4px 12px rgba(123, 30, 138, 0.2));
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .processing-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16.5px;
+    font-weight: 600;
+    color: var(--cta);
+    min-height: 24px;
+  }
+
+  .processing-percent {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--inactive);
+  }
+
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    background: var(--bg-soft);
+    border-radius: 18px;
+    padding: 18px 20px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-md);
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--inactive);
+    transition: color 300ms ease;
+  }
+
+  .checklist-item.done {
+    color: var(--ink);
+  }
+
+  .checklist-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--track);
+    font-size: 12px;
+    color: var(--track);
+    flex-shrink: 0;
+    transition: all 250ms ease;
+  }
+
+  .checklist-item.done .checklist-check {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(201, 162, 75, 0.4);
+  }
+
+  .processing-final-message {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--cta);
+    text-align: center;
+    line-height: 1.55;
+    margin: 0;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(123, 30, 138, 0.06), rgba(201, 162, 75, 0.08));
+    border-radius: 14px;
+    border: 1px solid var(--card-border);
+    opacity: 0;
+  }
+
+  .processing-final-message.show {
+    animation: fadeSlideUp 350ms ease-out forwards;
+  }
+
+  /* ---------- Result screen ---------- */
+  .result-hero { text-align: center; position: relative; }
+  .result-hero .label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    margin: 0 0 6px 0;
+  }
+  .result-hero .age-number-wrap { position: relative; display: inline-block; }
+  .result-hero .age-number-wrap::before {
+    content: "";
+    position: absolute;
+    inset: -20px -30px;
+    background: radial-gradient(circle, rgba(123, 30, 138, 0.16), transparent 70%);
+    z-index: -1;
+  }
+  .result-hero .age-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 88px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--cta) 10%, var(--cta-light) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .result-hero .age-unit {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--cta-light);
+    margin-left: 4px;
+  }
+
+  .compare-card {
+    background: var(--bg-soft);
+    border-radius: 18px;
+    padding: 18px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-md);
+  }
+
+  .compare-item { text-align: center; }
+  .compare-item .ci-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--inactive);
+    margin: 0 0 6px 0;
+  }
+  .compare-item .ci-value { font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 700; color: var(--ink); margin: 0; }
+  .compare-item .ci-value.highlight {
+    background: linear-gradient(135deg, var(--cta), var(--cta-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .compare-arrow { font-size: 20px; color: var(--gold); }
+
+  .result-text { font-size: 14.5px; color: var(--ink-soft); line-height: 1.65; margin: 0; }
+
+  .insight-card {
+    background: var(--bg-soft);
+    border-radius: 18px;
+    padding: 18px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-md);
+  }
+
+  .insight-card .insight-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cta);
+    margin: 0 0 10px 0;
+  }
+  .insight-card ul { font-size: 14px; color: var(--ink-soft); margin: 0; padding-left: 4px; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .insight-card li { position: relative; padding-left: 18px; line-height: 1.5; }
+  .insight-card li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  .method-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(123, 30, 138, 0.05), rgba(201, 162, 75, 0.05));
+    border-radius: 18px;
+    padding: 16px;
+    border: 1px solid var(--card-border);
+  }
+
+  .method-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 1px;
+  }
+
+  .method-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--cta);
+    margin: 0 0 6px 0;
+  }
+
+  .method-text {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .landing-emoji {
+    font-size: 56px;
+    text-align: center;
+    filter: drop-shadow(0 6px 16px rgba(123, 30, 138, 0.25));
+  }
+  .landing-screen { align-items: center; text-align: center; }
+
+  /* ---------- Result social proof section ---------- */
+  .transformation-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--bg-soft);
+    border-radius: 20px;
+    padding: 18px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-md);
+  }
+
+  .transformation-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--cta);
+    text-align: center;
+    margin: 0 0 4px 0;
+  }
+
+  /* ---------- Contextual question images ---------- */
+  .question-image-wrap {
+    width: 100%;
+    height: 260px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    background: var(--track);
+  }
+
+  .question-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    transform: scale(1.06);
+    transition: opacity 500ms ease, transform 6000ms ease-out;
+  }
+
+  .question-image-wrap img.loaded {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .question-image-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(43,21,51,0.45) 100%);
+    pointer-events: none;
+  }
+
+  .question-image-caption {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    right: 16px;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    margin: 0;
+    z-index: 2;
+  }
+
+</style>
+
+</head>
+<body>
+
+<div id="app-root">
+  <div class="quiz-container" id="quiz-container">
+    <div class="top-bar" id="top-bar"></div>
+    <div id="screen-host"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // =========================================================
+  // CONFIG — replace with your real checkout URL
+  // =========================================================
+  var CHECKOUT_URL = "https://pay.hotmart.com/T106328171T";
+
+  // =========================================================
+  // STATE
+  // =========================================================
+  var STEP_ORDER = [
+    "landing",
+    "age-range",
+    "social-proof-1",
+    "height",
+    "weight",
+    "belly",
+    "body-type",
+    "yoyo",
+    "weight-gain",
+    "social-proof-2",
+    "carb-reaction",
+    "q-gain-easier",
+    "q-future-weight",
+    "q-bothers-most",
+    "q-yoyo-history",
+    "q-sweet-craving",
+    "q-slow-metabolism",
+    "q-change-one-thing",
+    "q-change-body-part",
+    "q-discover-habit",
+    "q-personalized-plan",
+    "processing",
+    "result"
+  ];
+
+  var state = {
+    stepIndex: 0,
+    answers: {
+      ageRange: null,
+      weightUnit: "kg",
+      weightValue: 70,
+      heightUnit: "cm",
+      heightValue: 170,
+      belly: null,
+      bodyType: null,
+      yoyo: null,
+      weightGain2y: null,
+      carbReaction: null,
+      gainEasier: null,
+      futureWeight: null,
+      bothersMost: null,
+      yoyoHistory: null,
+      sweetCraving: null,
+      slowMetabolism: null,
+      changeOneThing: null,
+      changeBodyPart: null,
+      discoverHabit: null,
+      personalizedPlan: null
+    }
+  };
+
+  function currentStep() { return STEP_ORDER[state.stepIndex]; }
+
+  function progressPct() {
+    var total = STEP_ORDER.length - 1;
+    return Math.round((state.stepIndex / total) * 100);
+  }
+
+  function goNext() {
+    state.stepIndex = Math.min(state.stepIndex + 1, STEP_ORDER.length - 1);
+    render();
+  }
+
+  function goBack() {
+    state.stepIndex = Math.max(state.stepIndex - 1, 0);
+    render();
+  }
+
+  function setAnswer(key, value) {
+    state.answers[key] = value;
+  }
+
+  // =========================================================
+  // SCORING — estimativa lúdica, não é cálculo clínico real
+  // =========================================================
+  function calculateMetabolicAge(answers) {
+    var ageMidpoints = {
+      "18-29": 24, "30-39": 35, "40-49": 45, "50-59": 55, "60+": 65
+    };
+    var realAgeEstimate = answers.ageRange ? ageMidpoints[answers.ageRange] : 35;
+
+    var score = 0;
+
+    var bellyScore = { "Flat": 0, "A little belly": 2, "Protruding belly": 5, "Very large": 8 };
+    if (answers.belly) score += bellyScore[answers.belly] || 0;
+
+    var yoyoScore = { "1-2 times": 1, "3-5 times": 3, "5-8 times": 5, "Lost count": 7 };
+    if (answers.yoyo) score += yoyoScore[answers.yoyo] || 0;
+
+    var gainScore = { "Up to 5kg": 1, "5-10kg": 3, "11-15kg": 6, "More than 15kg": 9 };
+    if (answers.weightGain2y) score += gainScore[answers.weightGain2y] || 0;
+
+    var carbScore = { "Normal": 0, "Slightly sleepy": 2, "Very sleepy": 4, "Extremely sleepy + hungry": 6 };
+    if (answers.carbReaction) score += carbScore[answers.carbReaction] || 0;
+
+    var yoyoHistoryScore = { "Never": 0, "Once": 1, "A few times": 3, "Many times": 5 };
+    if (answers.yoyoHistory) score += yoyoHistoryScore[answers.yoyoHistory] || 0;
+
+    var sweetCravingScore = { "Almost never": 0, "Sometimes": 1, "Frequently": 3, "Every day": 5 };
+    if (answers.sweetCraving) score += sweetCravingScore[answers.sweetCraving] || 0;
+
+    var gainEasierScore = { "No": 0, "A little": 1, "Yes": 3, "Much more easily": 5 };
+    if (answers.gainEasier) score += gainEasierScore[answers.gainEasier] || 0;
+
+    var weightKg = answers.weightUnit === "kg" ? answers.weightValue : answers.weightValue * 0.453592;
+    var heightCm = answers.heightUnit === "cm" ? answers.heightValue : answers.heightValue * 2.54;
+    var heightM = heightCm / 100;
+    var bmi = heightM > 0 ? weightKg / (heightM * heightM) : 22;
+
+    var bmiAdjustment = 0;
+    if (bmi >= 30) bmiAdjustment = 8;
+    else if (bmi >= 25) bmiAdjustment = 4;
+    else if (bmi < 18.5) bmiAdjustment = 2;
+
+    var totalPenalty = score * 0.7 + bmiAdjustment;
+    var metabolicAge = Math.round(realAgeEstimate + totalPenalty);
+    var difference = metabolicAge - realAgeEstimate;
+
+    return { metabolicAge: metabolicAge, realAgeEstimate: realAgeEstimate, difference: difference };
+  }
+
+  // =========================================================
+  // HELPERS
+  // =========================================================
+  function el(tag, className, html) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (html !== undefined) node.innerHTML = html;
+    return node;
+  }
+
+  function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
+
+  // =========================================================
+  // CONTEXTUAL QUESTION IMAGES
+  // Real photos from Pexels (free license, no attribution required).
+  // Shown above the title roughly every 4 questions, matched to topic.
+  // =========================================================
+  var PEXELS_BASE = "https://images.pexels.com/photos/";
+
+  function pexelsUrl(id) {
+    return PEXELS_BASE + id + "/pexels-photo-" + id + ".jpeg?auto=compress&cs=tinysrgb&w=900";
+  }
+
+  var QUESTION_IMAGES = {
+    "belly": { id: 6975464, caption: "Tracking changes in your body is the first step" },
+    "weight-gain": { id: 6975464, caption: "Small fluctuations tell a bigger story" },
+    "carb-reaction": { id: 6516086, caption: "Sweets and carbs affect every body differently" },
+    "q-gain-easier": { id: 3076513, caption: "Metabolism changes — and it can be understood" },
+    "q-future-weight": { id: 4869356, caption: "Small daily choices add up over time" },
+    "q-sweet-craving": { id: 6516086, caption: "Sugar cravings are more common than you think" },
+    "q-slow-metabolism": { id: 17597408, caption: "Balanced eating supports your metabolism" },
+    "q-discover-habit": { id: 7622509, caption: "Small daily habits make a difference in energy" }
+  };
+
+  function buildQuestionImage(stepId) {
+    var data = QUESTION_IMAGES[stepId];
+    if (!data) return null;
+
+    var wrap = el("div", "question-image-wrap");
+    var img = document.createElement("img");
+    img.src = pexelsUrl(data.id);
+    img.alt = "";
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.onload = function () { img.classList.add("loaded"); };
+    wrap.appendChild(img);
+
+    var caption = el("p", "question-image-caption", data.caption);
+    wrap.appendChild(caption);
+
+    return wrap;
+  }
+
+  // =========================================================
+  // TOP BAR (back button + progress)
+  // =========================================================
+  function renderTopBar() {
+    var topBar = document.getElementById("top-bar");
+    topBar.innerHTML = "";
+
+    var step = currentStep();
+    var showProgress = step !== "landing" && step !== "processing";
+    var showBack = showProgress && step !== "result";
+
+    if (showBack) {
+      var backBtn = el("button", "back-btn", "←");
+      backBtn.setAttribute("aria-label", "Voltar");
+      backBtn.onclick = goBack;
+      topBar.appendChild(backBtn);
+    }
+
+    if (showProgress) {
+      var track = el("div", "progress-track");
+      var fill = el("div", "progress-fill");
+      track.appendChild(fill);
+      topBar.appendChild(track);
+      requestAnimationFrame(function () {
+        fill.style.width = progressPct() + "%";
+      });
+    }
+  }
+
+  // =========================================================
+  // SCREEN BUILDERS
+  // =========================================================
+  function buildLanding() {
+    var s = el("div", "screen landing-screen");
+    s.style.gap = "18px";
+
+    s.appendChild(el("div", "landing-emoji", "🕰️"));
+    s.appendChild(el("p", "eyebrow", "Personalized assessment"));
+
+    var title = el("h1", "quiz-title");
+    title.innerHTML = 'Discover Your <span class="accent">Metabolic Age</span>';
+    s.appendChild(title);
+
+    var sub = el("p", "quiz-subtitle", "Answer a few quick questions and see how your habits may be affecting your metabolism — in under 2 minutes.");
+    sub.style.maxWidth = "320px";
+    sub.style.margin = "0 auto";
+    s.appendChild(sub);
+
+    var btnWrap = el("div");
+    btnWrap.style.width = "100%";
+    btnWrap.style.marginTop = "8px";
+    var btn = el("button", "btn-primary", "Discover Your Metabolic Age");
+    btn.onclick = goNext;
+    btnWrap.appendChild(btn);
+    s.appendChild(btnWrap);
+
+    s.appendChild(el("p", "small-note", "Estimated result for entertainment and self-awareness purposes."));
+
+    return s;
+  }
+
+  function buildOptionScreen(config) {
+    // config: { title, key, options }
+    var s = el("div", "screen");
+
+    var image = buildQuestionImage(currentStep());
+    if (image) s.appendChild(image);
+
+    s.appendChild(el("h1", "quiz-title", config.title));
+
+    var list = el("div", "option-list");
+    config.options.forEach(function (opt, i) {
+      var btn = el("button", "option-btn", opt);
+      btn.style.animationDelay = (i * 0.05) + "s";
+      if (state.answers[config.key] === opt) btn.classList.add("selected");
+      btn.onclick = function () {
+        setAnswer(config.key, opt);
+        renderTopBar();
+        Array.prototype.forEach.call(list.children, function (c) { c.classList.remove("selected"); });
+        btn.classList.add("selected");
+        setTimeout(goNext, 250);
+      };
+      list.appendChild(btn);
+    });
+    s.appendChild(list);
+    return s;
+  }
+
+  function buildOptionScreenWithTransition(config) {
+    // config: { title, key, options, transitionText }
+    var s = el("div", "screen");
+
+    var image = buildQuestionImage(currentStep());
+    if (image) s.appendChild(image);
+
+    var titleEl = el("h1", "quiz-title", config.title);
+    s.appendChild(titleEl);
+
+    var list = el("div", "option-list");
+    var transitionEl = el("p", "transition-text");
+    transitionEl.style.display = "none";
+
+    config.options.forEach(function (opt, i) {
+      var btn = el("button", "option-btn", opt);
+      btn.style.animationDelay = (i * 0.05) + "s";
+      if (state.answers[config.key] === opt) btn.classList.add("selected");
+      btn.onclick = function () {
+        setAnswer(config.key, opt);
+        Array.prototype.forEach.call(list.children, function (c) { c.classList.remove("selected"); });
+        btn.classList.add("selected");
+
+        // Disable further clicks while transition plays
+        Array.prototype.forEach.call(list.children, function (c) { c.disabled = true; });
+
+        transitionEl.textContent = config.transitionText;
+        transitionEl.style.display = "block";
+        transitionEl.classList.add("show");
+
+        setTimeout(goNext, 1100);
+      };
+      list.appendChild(btn);
+    });
+    s.appendChild(list);
+    s.appendChild(transitionEl);
+    return s;
+  }
+
+
+  function buildAgeRange() {
+    return buildOptionScreen({
+      title: "What's your age range?",
+      key: "ageRange",
+      options: ["18-29", "30-39", "40-49", "50-59", "60+"]
+    });
+  }
+
+  function buildBelly() {
+    return buildOptionScreen({
+      title: "How would you describe your belly right now?",
+      key: "belly",
+      options: ["Flat", "A little belly", "Protruding belly", "Very large"]
+    });
+  }
+
+  // Simple SVG silhouette generator for body type question.
+  // Uses illustrated shapes (not real photos) to avoid misrepresenting real people.
+  function bodySilhouetteSVG(bellyRadius) {
+    return '<svg viewBox="0 0 100 160" width="72" height="115" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="50" cy="20" r="14" fill="#D8C7DE"/>' +
+      '<path d="M30 38 Q50 30 70 38 L74 75 Q50 ' + (75 + bellyRadius) + ' 26 75 Z" fill="#C9A8D6"/>' +
+      '<rect x="28" y="74" width="44" height="70" rx="14" fill="#7B1E8A" opacity="0.85"/>' +
+      '</svg>';
+  }
+
+  function buildBodyType() {
+    var s = el("div", "screen");
+    s.appendChild(el("h1", "quiz-title", "Which body type looks most like yours?"));
+
+    var options = [
+      { key: "A little belly", label: "Flat belly", radius: 2 },
+      { key: "Protruding belly", label: "Slightly protruding", radius: 14 },
+      { key: "Very large", label: "Protruding", radius: 24 },
+      { key: "Flat", label: "Well defined", radius: -4 }
+    ];
+
+    var grid = el("div", "bodytype-grid");
+    options.forEach(function (opt, i) {
+      var card = el("div", "bodytype-card");
+      card.style.animationDelay = (i * 0.06) + "s";
+      if (state.answers.bodyType === opt.key) card.classList.add("selected");
+      card.innerHTML =
+        '<div class="bodytype-illustration">' + bodySilhouetteSVG(opt.radius) + '</div>' +
+        '<p class="bodytype-label">' + opt.label + '</p>';
+      card.onclick = function () {
+        setAnswer("bodyType", opt.key);
+        Array.prototype.forEach.call(grid.children, function (c) { c.classList.remove("selected"); });
+        card.classList.add("selected");
+        setTimeout(goNext, 250);
+      };
+      grid.appendChild(card);
+    });
+    s.appendChild(grid);
+
+    return s;
+  }
+
+  function buildYoyo() {
+    return buildOptionScreen({
+      title: "How many times have you regained weight after losing it?",
+      key: "yoyo",
+      options: ["1-2 times", "3-5 times", "5-8 times", "Lost count"]
+    });
+  }
+
+  function buildWeightGain() {
+    return buildOptionScreen({
+      title: "How much weight have you gained in the last 2 years?",
+      key: "weightGain2y",
+      options: ["Up to 5kg", "5-10kg", "11-15kg", "More than 15kg"]
+    });
+  }
+
+  function buildCarbReaction() {
+    return buildOptionScreen({
+      title: "How do you feel after eating bread, pasta, or rice?",
+      key: "carbReaction",
+      options: ["Normal", "Slightly sleepy", "Very sleepy", "Extremely sleepy + hungry"]
+    });
+  }
+
+  function buildGainEasier() {
+    return buildOptionScreenWithTransition({
+      title: "Do you feel like you gain weight more easily today than a few years ago?",
+      key: "gainEasier",
+      options: ["No", "A little", "Yes", "Much more easily"],
+      transitionText: "Interesting... this may be related to your current metabolic rate."
+    });
+  }
+
+  function buildFutureWeight() {
+    return buildOptionScreenWithTransition({
+      title: "If nothing changes, how do you picture your weight 12 months from now?",
+      key: "futureWeight",
+      options: ["The same", "A few pounds up", "Significantly up", "I'd rather not think about it"],
+      transitionText: "We're identifying your risk of future weight gain..."
+    });
+  }
+
+  function buildBothersMost() {
+    return buildOptionScreenWithTransition({
+      title: "Which of these bothers you the most?",
+      key: "bothersMost",
+      options: ["Belly", "Lack of energy", "Tight clothes", "Low self-esteem"],
+      transitionText: "Thousands of people have reported exactly the same issue."
+    });
+  }
+
+  function buildYoyoHistory() {
+    return buildOptionScreenWithTransition({
+      title: "Have you ever lost weight and then gained it back?",
+      key: "yoyoHistory",
+      options: ["Never", "Once", "A few times", "Many times"],
+      transitionText: "This can be a sign of metabolic adaptation."
+    });
+  }
+
+  function buildSweetCraving() {
+    return buildOptionScreenWithTransition({
+      title: "How often do you crave sweets?",
+      key: "sweetCraving",
+      options: ["Almost never", "Sometimes", "Frequently", "Every day"],
+      transitionText: "We're calculating the impact of your eating habits."
+    });
+  }
+
+  function buildSlowMetabolism() {
+    return buildOptionScreenWithTransition({
+      title: "Do you believe your metabolism is slower than it should be?",
+      key: "slowMetabolism",
+      options: ["No", "Maybe", "Yes", "I'm sure of it"],
+      transitionText: "The next data points will help confirm that."
+    });
+  }
+
+  function buildChangeOneThing() {
+    return buildOptionScreenWithTransition({
+      title: "If you could choose, what would you change first about your body?",
+      key: "changeOneThing",
+      options: ["Belly", "Weight", "Energy", "Posture"],
+      transitionText: "You're just a few steps away from discovering your metabolic profile."
+    });
+  }
+
+  function buildChangeBodyPart() {
+    return buildOptionScreenWithTransition({
+      title: "If you could change just one thing about your body today, what would it be?",
+      key: "changeBodyPart",
+      options: ["Belly", "Weight", "Energy", "Everything"],
+      transitionText: "We're almost done with your analysis."
+    });
+  }
+
+  function buildDiscoverHabit() {
+    return buildOptionScreenWithTransition({
+      title: "Would you like to find out which habit is aging your metabolism?",
+      key: "discoverHabit",
+      options: ["Yes", "I want to know", "Absolutely", "I need to know"],
+      transitionText: "This information will appear in your personalized result."
+    });
+  }
+
+  function buildPersonalizedPlan() {
+    return buildOptionScreenWithTransition({
+      title: "Would you like to receive a personalized plan based on your answers?",
+      key: "personalizedPlan",
+      options: ["Yes", "Yes please", "Absolutely", "I want it now"],
+      transitionText: "Perfect. Let's get that ready for you."
+    });
+  }
+
+  var TESTIMONIALS = [
+    { name: "Marina S., 44", text: "I was surprised by the result. It helped me understand my habits better.", rating: 5, avatar: "https://i.pravatar.cc/150?img=45" },
+    { name: "Renata F., 51", text: "Quick and easy to answer. The questions really resonated with how I feel.", rating: 5, avatar: "https://i.pravatar.cc/150?img=47" },
+    { name: "Patricia A., 38", text: "I recommend it for anyone who wants to start paying more attention to their health.", rating: 4, avatar: "https://i.pravatar.cc/150?img=44" }
+  ];
+
+  function buildSocialProof1() {
+    var s = el("div", "screen");
+    s.appendChild(el("h1", "quiz-title", "You're in good company"));
+
+    var rating = el("div", "proof-rating");
+    rating.innerHTML = '<span class="stars">★★★★★</span><span>+12,000 people have taken this quiz</span>';
+    s.appendChild(rating);
+
+    var stack = el("div", "cards-stack");
+    TESTIMONIALS.forEach(function (t, i) {
+      var card = el("div", "testimonial-card");
+      card.style.animationDelay = (i * 0.1) + "s";
+      card.innerHTML =
+        '<div class="testimonial-header">' +
+          '<img class="avatar" src="' + t.avatar + '" alt="" loading="lazy" />' +
+          '<div>' +
+            '<p class="author">' + t.name + '</p>' +
+            '<div class="stars-row">' + "★".repeat(t.rating) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<p>' + t.text + '</p>';
+      stack.appendChild(card);
+    });
+    s.appendChild(stack);
+
+    var btn = el("button", "btn-primary", "CONTINUE");
+    btn.style.marginTop = "8px";
+    btn.onclick = goNext;
+    s.appendChild(btn);
+
+    s.appendChild(el("p", "small-note", "Illustrative testimonials, representative of the typical user experience."));
+
+    return s;
+  }
+
+  var STORIES = [
+    { name: "Renata, 42", text: "I didn't understand why I felt so sleepy after eating. Learning more about my metabolism was the first step to changing my routine.", avatar: "https://i.pravatar.cc/150?img=48" },
+    { name: "Cristiane, 51", text: "I had tried everything. Understanding my habits better helped me stop blaming myself and focus on what actually mattered.", avatar: "https://i.pravatar.cc/150?img=49" }
+  ];
+
+  function buildSocialProof2() {
+    var s = el("div", "screen");
+    s.appendChild(el("h1", "quiz-title", "Real stories, real results"));
+
+    var stack = el("div", "cards-stack");
+    STORIES.forEach(function (st, i) {
+      var card = el("div", "story-card");
+      card.style.animationDelay = (i * 0.1) + "s";
+      card.innerHTML =
+        '<div class="testimonial-header">' +
+          '<img class="avatar" src="' + st.avatar + '" alt="" loading="lazy" />' +
+          '<p class="author">' + st.name + '</p>' +
+        '</div>' +
+        '<p class="story-text">&ldquo;' + st.text + '&rdquo;</p>';
+      stack.appendChild(card);
+    });
+    s.appendChild(stack);
+
+    var btn = el("button", "btn-primary", "CONTINUE");
+    btn.style.marginTop = "8px";
+    btn.onclick = goNext;
+    s.appendChild(btn);
+
+    s.appendChild(el("p", "small-note", "Illustrative stories, representative of user reports."));
+
+    return s;
+  }
+
+  // ---------- Height / Weight (unit toggle + ruler slider) ----------
+  function buildMeasureScreen(config) {
+    // config: { emoji, title, key, units: [u1, u2], ranges: {u1:[min,max], u2:[min,max]}, convert: fn(value, fromUnit, toUnit) }
+    var s = el("div", "screen");
+
+    var titleEl = el("h1", "quiz-title", config.emoji + " " + config.title);
+    s.appendChild(titleEl);
+
+    // Unit toggle
+    var toggle = el("div", "unit-toggle");
+    var bg = el("div", "unit-toggle-bg");
+    toggle.appendChild(bg);
+
+    var unitButtons = [];
+    config.units.forEach(function (u, idx) {
+      var b = el("button", null, u);
+      b.onclick = function () {
+        if (state.answers[config.key + "Unit"] === u) return;
+        var oldUnit = state.answers[config.key + "Unit"];
+        var oldVal = state.answers[config.key + "Value"];
+        var newVal = config.convert(oldVal, oldUnit, u);
+        state.answers[config.key + "Unit"] = u;
+        state.answers[config.key + "Value"] = newVal;
+        render();
+      };
+      unitButtons.push(b);
+      toggle.appendChild(b);
+    });
+    s.appendChild(toggle);
+
+    function syncToggleUI() {
+      var activeUnit = state.answers[config.key + "Unit"];
+      unitButtons.forEach(function (b, idx) {
+        var u = config.units[idx];
+        b.classList.toggle("active", u === activeUnit);
+      });
+      bg.classList.toggle("right", config.units.indexOf(activeUnit) === 1);
+    }
+    syncToggleUI();
+
+    // Value display
+    var valueDisplay = el("div", "value-display");
+    var numberSpan = el("span", "value-number");
+    var unitSpan = el("span", "value-unit");
+    valueDisplay.appendChild(numberSpan);
+    valueDisplay.appendChild(unitSpan);
+    s.appendChild(valueDisplay);
+
+    function syncValueDisplay() {
+      numberSpan.textContent = state.answers[config.key + "Value"];
+      unitSpan.textContent = state.answers[config.key + "Unit"];
+    }
+    syncValueDisplay();
+
+    // Ruler slider
+    var rulerHost = el("div");
+    s.appendChild(rulerHost);
+
+    function buildRuler() {
+      rulerHost.innerHTML = "";
+      var activeUnit = state.answers[config.key + "Unit"];
+      var range = config.ranges[activeUnit];
+      var min = range[0], max = range[1];
+      var value = state.answers[config.key + "Value"];
+      var TICK_GAP = 18;
+
+      var wrap = el("div", "ruler-wrap");
+      var viewport = el("div", "ruler-viewport");
+      var track = el("div", "ruler-track");
+
+      for (var v = min; v <= max; v++) {
+        var isMajor = (v % 5 === 0);
+        var tick = el("div", "tick");
+        var mark = el("div", "tick-mark" + (isMajor ? " major" : ""));
+        tick.appendChild(mark);
+        if (isMajor) {
+          tick.appendChild(el("span", "tick-label", String(v)));
+        }
+        track.appendChild(tick);
+      }
+      viewport.appendChild(track);
+
+      var indicator = el("div", "ruler-indicator");
+      indicator.appendChild(el("div", "ruler-indicator-line"));
+      indicator.appendChild(el("div", "ruler-indicator-triangle"));
+      viewport.appendChild(indicator);
+
+      wrap.appendChild(viewport);
+      wrap.appendChild(el("p", "drag-hint", "Drag to adjust"));
+      wrap.appendChild(el("p", "unit-hint", activeUnit));
+
+      rulerHost.appendChild(wrap);
+
+      function applyOffset() {
+        var containerWidth = viewport.clientWidth;
+        var currentVal = state.answers[config.key + "Value"];
+        var offset = containerWidth / 2 - (currentVal - min) * TICK_GAP;
+        track.style.transform = "translateX(" + offset + "px)";
+      }
+      applyOffset();
+      window.addEventListener("resize", applyOffset);
+      // Ensures correct centering after the node is inserted into the real DOM
+      // (on first render, viewport.clientWidth is still 0 here).
+      requestAnimationFrame(applyOffset);
+
+      var isDragging = false;
+      var dragStartX = 0;
+      var dragStartValue = value;
+
+      function onPointerDown(e) {
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartValue = state.answers[config.key + "Value"];
+        viewport.classList.add("dragging");
+        if (viewport.setPointerCapture && e.pointerId !== undefined) {
+          try { viewport.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+      }
+
+      function onPointerMove(e) {
+        if (!isDragging) return;
+        var deltaX = e.clientX - dragStartX;
+        var deltaValue = -deltaX / TICK_GAP;
+        var rawValue = dragStartValue + deltaValue;
+        var stepped = Math.round(rawValue);
+        var newVal = clamp(stepped, min, max);
+        if (newVal !== state.answers[config.key + "Value"]) {
+          state.answers[config.key + "Value"] = newVal;
+          syncValueDisplay();
+        }
+        applyOffset();
+      }
+
+      function onPointerUp() {
+        isDragging = false;
+        viewport.classList.remove("dragging");
+      }
+
+      viewport.addEventListener("pointerdown", onPointerDown);
+      viewport.addEventListener("pointermove", onPointerMove);
+      viewport.addEventListener("pointerup", onPointerUp);
+      viewport.addEventListener("pointercancel", onPointerUp);
+    }
+
+    buildRuler();
+
+    // Re-render ruler + toggle UI whenever unit changes (handled via full screen rebuild on unit click -> render())
+    syncToggleUI();
+
+    var continueBtn = el("button", "btn-primary", "CONTINUE");
+    continueBtn.style.marginTop = "8px";
+    continueBtn.onclick = goNext;
+    s.appendChild(continueBtn);
+
+    return s;
+  }
+
+  function cmToInches(v) { return Math.round(v / 2.54); }
+  function inchesToCm(v) { return Math.round(v * 2.54); }
+  function kgToLb(v) { return Math.round(v * 2.20462); }
+  function lbToKg(v) { return Math.round(v / 2.20462); }
+
+  function buildHeight() {
+    return buildMeasureScreen({
+      emoji: "📏",
+      title: "Your Height",
+      key: "height",
+      units: ["cm", "in"],
+      ranges: {
+        cm: [140, 220],
+        in: [cmToInches(140), cmToInches(220)]
+      },
+      convert: function (value, fromUnit, toUnit) {
+        if (fromUnit === toUnit) return value;
+        return toUnit === "in" ? cmToInches(value) : inchesToCm(value);
+      }
+    });
+  }
+
+  function buildWeight() {
+    return buildMeasureScreen({
+      emoji: "⚖️",
+      title: "Current Weight",
+      key: "weight",
+      units: ["kg", "lb"],
+      ranges: {
+        kg: [40, 180],
+        lb: [kgToLb(40), kgToLb(180)]
+      },
+      convert: function (value, fromUnit, toUnit) {
+        if (fromUnit === toUnit) return value;
+        return toUnit === "lb" ? kgToLb(value) : lbToKg(value);
+      }
+    });
+  }
+
+  var ANALYSIS_STEPS = [
+    { label: "Analyzing metabolism...", checklistIndex: 0 },
+    { label: "Assessing body profile...", checklistIndex: 1 },
+    { label: "Processing eating habits...", checklistIndex: 2 },
+    { label: "Calculating weight gain trend...", checklistIndex: 3 }
+  ];
+
+  var CHECKLIST_ITEMS = [
+    "Metabolic profile identified",
+    "Calorie burn rate calculated",
+    "Weight gain trend analyzed",
+    "Comparison with people your age completed"
+  ];
+
+  var TOTAL_DURATION_MS = 3600;
+
+  function buildProcessing() {
+    var s = el("div", "screen processing-screen");
+
+    var icon = el("div", "processing-icon", "🔍");
+    s.appendChild(icon);
+
+    var label = el("p", "processing-label", "Analyzing your answers...");
+    s.appendChild(label);
+
+    var checklist = el("div", "checklist");
+    var checklistItemNodes = CHECKLIST_ITEMS.map(function (text) {
+      var item = el("div", "checklist-item");
+      var check = el("span", "checklist-check", "○");
+      var label2 = el("span", "checklist-label", text);
+      item.appendChild(check);
+      item.appendChild(label2);
+      checklist.appendChild(item);
+      return { item: item, check: check };
+    });
+    s.appendChild(checklist);
+
+    var track = el("div", "progress-track");
+    track.style.width = "100%";
+    var fill = el("div", "progress-fill");
+    track.appendChild(fill);
+    s.appendChild(track);
+
+    var percent = el("p", "processing-percent", "0%");
+    s.appendChild(percent);
+
+    var finalMessage = el("p", "processing-final-message", "Result ready! Tap CONTINUE to discover your true metabolic age.");
+    finalMessage.style.display = "none";
+    s.appendChild(finalMessage);
+
+    var continueBtn = el("button", "btn-primary", "CONTINUE");
+    continueBtn.style.display = "none";
+    continueBtn.style.marginTop = "8px";
+    continueBtn.onclick = goNext;
+    s.appendChild(continueBtn);
+
+    var stepIdx = -1;
+    var stepDuration = TOTAL_DURATION_MS / ANALYSIS_STEPS.length;
+
+    function activateChecklistItem(idx) {
+      if (idx < 0 || idx >= checklistItemNodes.length) return;
+      var node = checklistItemNodes[idx];
+      node.check.textContent = "✓";
+      node.item.classList.add("done");
+    }
+
+    var labelInterval = setInterval(function () {
+      stepIdx = Math.min(stepIdx + 1, ANALYSIS_STEPS.length - 1);
+      label.textContent = ANALYSIS_STEPS[stepIdx].label;
+      activateChecklistItem(ANALYSIS_STEPS[stepIdx].checklistIndex);
+    }, stepDuration);
+
+    var start = Date.now();
+    var progressInterval = setInterval(function () {
+      var elapsed = Date.now() - start;
+      var pct = Math.min(100, (elapsed / TOTAL_DURATION_MS) * 100);
+      fill.style.width = pct + "%";
+      percent.textContent = Math.round(pct) + "%";
+      if (pct >= 100) {
+        clearInterval(progressInterval);
+        label.textContent = "Please wait... we're generating your personalized result.";
+        setTimeout(function () {
+          label.style.display = "none";
+          percent.style.display = "none";
+          finalMessage.style.display = "block";
+          finalMessage.classList.add("show");
+          continueBtn.style.display = "block";
+        }, 500);
+      }
+    }, 50);
+
+    // First checklist tick fires immediately so the screen doesn't feel idle
+    var firstTickTimeout = setTimeout(function () {
+      stepIdx = 0;
+      label.textContent = ANALYSIS_STEPS[0].label;
+      activateChecklistItem(0);
+    }, 50);
+
+    s._cleanup = function () {
+      clearInterval(labelInterval);
+      clearInterval(progressInterval);
+      clearTimeout(firstTickTimeout);
+    };
+
+    return s;
+  }
+
+
+
+  // ---------- Result screen ----------
+  // Seção de prova social na tela de resultado.
+  // Usa fotos reais de avatar (CC0, sem atribuição) associadas a depoimentos
+  // qualitativos. Não usa pares de foto "antes/depois" nem números de peso
+  // fabricados, pois isso atribuiria um resultado de emagrecimento real a
+  // pessoas que nunca tiveram esse resultado com o produto.
+  var RESULT_TESTIMONIALS = [
+    {
+      name: "Carla, 51",
+      avatar: "https://i.pravatar.cc/150?img=26",
+      rating: 5,
+      text: "I have so much more energy throughout the day now. It was the first time I understood why I felt so sleepy after eating."
+    },
+    {
+      name: "Juliana, 39",
+      avatar: "https://i.pravatar.cc/150?img=29",
+      rating: 5,
+      text: "The quiz made me notice patterns I had never stopped to look at. It changed how I think about my routine."
+    },
+    {
+      name: "Sandra, 56",
+      avatar: "https://i.pravatar.cc/150?img=32",
+      rating: 4,
+      text: "I took the result seriously and started paying more attention to small habits. I can already feel a difference in my energy."
+    },
+    {
+      name: "Beatriz, 47",
+      avatar: "https://i.pravatar.cc/150?img=36",
+      rating: 5,
+      text: "I recommend it for anyone who wants a real starting point to understand their own body, without a miracle promise."
+    },
+    {
+      name: "Camila, 35",
+      avatar: "https://i.pravatar.cc/150?img=33",
+      rating: 5,
+      text: "I thought it would be just another generic quiz, but the questions felt like they were speaking directly to my routine. Highly recommend."
+    }
+  ];
+
+  function buildResultSocialProof() {
+    var wrap = el("div", "transformation-section");
+    wrap.appendChild(el("p", "transformation-title", "Women who have taken this quiz"));
+
+    var rating = el("div", "proof-rating");
+    rating.style.justifyContent = "center";
+    rating.innerHTML = '<span class="stars">★★★★★</span><span>+12,000 responses analyzed</span>';
+    wrap.appendChild(rating);
+
+    var stack = el("div", "cards-stack");
+    RESULT_TESTIMONIALS.forEach(function (t, i) {
+      var card = el("div", "testimonial-card");
+      card.style.animationDelay = (i * 0.08) + "s";
+      card.innerHTML =
+        '<div class="testimonial-header">' +
+          '<img class="avatar" src="' + t.avatar + '" alt="" loading="lazy" />' +
+          '<div>' +
+            '<p class="author">' + t.name + '</p>' +
+            '<div class="stars-row">' + "★".repeat(t.rating) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<p>' + t.text + '</p>';
+      stack.appendChild(card);
+    });
+    wrap.appendChild(stack);
+
+    wrap.appendChild(el("p", "small-note", "Illustrative testimonials, representative of the typical user experience. They do not represent a promise of a specific result."));
+
+    return wrap;
+  }
+
+
+  function buildResult() {
+    var s = el("div", "screen");
+    var result = calculateMetabolicAge(state.answers);
+
+    var hero = el("div", "result-hero");
+    hero.innerHTML =
+      '<p class="label">YOUR ESTIMATED METABOLIC AGE IS</p>' +
+      '<div class="age-number-wrap"><span class="age-number" id="animated-age">0</span><span class="age-unit">years</span></div>';
+    s.appendChild(hero);
+
+    var compare = el("div", "compare-card");
+    compare.innerHTML =
+      '<div class="compare-item"><p class="ci-label">Real age</p><p class="ci-value">' + result.realAgeEstimate + '</p></div>' +
+      '<div class="compare-arrow">→</div>' +
+      '<div class="compare-item"><p class="ci-label">Metabolic age</p><p class="ci-value highlight">' + result.metabolicAge + '</p></div>';
+    s.appendChild(compare);
+
+    var textBlock = el("div");
+    textBlock.style.display = "flex";
+    textBlock.style.flexDirection = "column";
+    textBlock.style.gap = "12px";
+
+    var explanation = result.difference > 0
+      ? "Based on your answers, your metabolism appears to be " + result.difference + " year(s) older than your real age. This may be related to eating habits, weight fluctuations, and body composition."
+      : "Based on your answers, your metabolism appears to be in line with — or even younger than — your real age. Keeping up consistent habits can help maintain this balance.";
+
+    textBlock.appendChild(el("p", "result-text", explanation));
+
+    var insightCard = el("div", "insight-card");
+    insightCard.innerHTML =
+      '<p class="insight-title">What this could mean:</p>' +
+      '<ul><li>Energy patterns throughout the day</li><li>Tendency toward weight fluctuation</li><li>Possible link to feeling tired after meals</li></ul>';
+    textBlock.appendChild(insightCard);
+
+    var methodCard = el("div", "method-card");
+    methodCard.innerHTML =
+      '<div class="method-icon">🔎</div>' +
+      '<div>' +
+        '<p class="method-title">How we got this number</p>' +
+        '<p class="method-text">Your estimate combines factors known to influence metabolism: body composition (height/weight), weight fluctuation history, sleep, eating habits, and reported energy levels. It\'s an indicator for entertainment and self-awareness, not a clinical test.</p>' +
+      '</div>';
+    textBlock.appendChild(methodCard);
+
+    s.appendChild(textBlock);
+
+    s.appendChild(buildResultSocialProof());
+
+    var ctaBtn = el("button", "btn-primary", "I WANT TO REJUVENATE MY METABOLISM");
+    ctaBtn.style.marginTop = "4px";
+    ctaBtn.onclick = function () {
+      window.location.href = CHECKOUT_URL;
+    };
+    s.appendChild(ctaBtn);
+
+    s.appendChild(el("p", "small-note", "This result is an estimate based on your quiz answers, intended for entertainment and self-awareness purposes. It does not replace professional medical or nutritional evaluation."));
+
+    // animate counter after mount
+    setTimeout(function () {
+      var counterEl = document.getElementById("animated-age");
+      if (!counterEl) return;
+      var duration = 1200;
+      var startTime = null;
+      function step(timestamp) {
+        if (startTime === null) startTime = timestamp;
+        var elapsed = timestamp - startTime;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        counterEl.textContent = Math.round(eased * result.metabolicAge);
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }, 0);
+
+    return s;
+  }
+
+  // =========================================================
+  // SCREEN MAP + RENDER
+  // =========================================================
+  var SCREEN_BUILDERS = {
+    "landing": buildLanding,
+    "age-range": buildAgeRange,
+    "social-proof-1": buildSocialProof1,
+    "height": buildHeight,
+    "weight": buildWeight,
+    "belly": buildBelly,
+    "body-type": buildBodyType,
+    "yoyo": buildYoyo,
+    "weight-gain": buildWeightGain,
+    "social-proof-2": buildSocialProof2,
+    "carb-reaction": buildCarbReaction,
+    "q-gain-easier": buildGainEasier,
+    "q-future-weight": buildFutureWeight,
+    "q-bothers-most": buildBothersMost,
+    "q-yoyo-history": buildYoyoHistory,
+    "q-sweet-craving": buildSweetCraving,
+    "q-slow-metabolism": buildSlowMetabolism,
+    "q-change-one-thing": buildChangeOneThing,
+    "q-change-body-part": buildChangeBodyPart,
+    "q-discover-habit": buildDiscoverHabit,
+    "q-personalized-plan": buildPersonalizedPlan,
+    "processing": buildProcessing,
+    "result": buildResult
+  };
+
+  var lastScreenNode = null;
+
+  function render() {
+    renderTopBar();
+
+    if (lastScreenNode && lastScreenNode._cleanup) {
+      lastScreenNode._cleanup();
+    }
+
+    var host = document.getElementById("screen-host");
+    host.innerHTML = "";
+    var step = currentStep();
+    var builder = SCREEN_BUILDERS[step];
+    var node = builder();
+    host.appendChild(node);
+    lastScreenNode = node;
+  }
+
+  render();
+})();
+</script>
+
+</body>
+</html>
